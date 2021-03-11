@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #define REPORT_FILE "packages_report.txt"
 
@@ -32,6 +33,11 @@ int main(int argc, char **argv) {
 	return 1;
     }
 
+    if(argc < 5){
+        printf("Paramentros incompletos\n");
+        return 1;
+    }
+
     analizeLog(argv[2], REPORT_FILE);
 
     return 0;
@@ -48,8 +54,12 @@ void analizeLog(char *logFile, char *report) {
     char *word, *date, *name;
 
     fp = fopen(logFile, "r");
-    if (fp == NULL)
-        exit(EXIT_FAILURE);
+    if (fp == NULL){
+        printf("Archivos no validos\n");
+        printf("Value of errno: %d\n ", errno);
+        return;
+
+    }
 
     while ((read = getline(&line, &len, fp)) != -1) {
         date = strsep(&line, "]");
